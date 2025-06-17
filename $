@@ -1,0 +1,469 @@
+-- require("config.lazy")
+-- require("config.options")
+-- require("config.themes")
+-- require("config.")
+
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not (vim.uv or vim.loop).fs_stat(lazypath) then
+    local lazyrepo = "https://github.com/folke/lazy.nvim.git"
+    local out = vim.fn.system({ "git", "clone",
+                                "--filter=blob:none",
+                                "--branch=stable",
+                                lazyrepo, lazypath})
+    if vim.v.shell_error ~= 0 then
+        vim.api.nvim_echo({
+            {"Failed to clone lazy.nvim:\n", "ErrorMsg"},
+            {out, "WarningMsg"},
+            {"\nPress any key to exit..."},
+        }, true, {})
+        vim.fn.getchar()
+        os.exit(1)
+    end
+end
+vim.opt.rtp:prepend(lazypath)
+
+vim.g.mapleader = " "
+
+
+-- Variables for Lazy Config
+-- Lualine
+
+
+-- Functions for Lazy Config
+-- Lualine Clock
+local function clock()
+    return os.date("%H:%M:%S")
+end
+
+
+require("lazy").setup({
+	-- spec = {import = "plugins"},
+	-- checker = {enable = true}
+
+	-- External Packages
+    -- Colorscheme
+    -- inuse
+    {
+    	"navarasu/onedark.nvim",
+    	config = function()
+        	require('onedark').setup({style = "darker"})
+        	require('onedark').load()
+        end
+	},
+    -- backup
+    {"rebelot/kanagawa.nvim"},
+    {"folke/tokyonight.nvim"},
+
+	-- Plugins
+    	-- Neovim Lspconfig
+   	{
+		"neovim/nvim-lspconfig",
+	},
+
+	-- Mason
+	{
+		"williamboman/mason.nvim",
+		config = function()
+			require("mason").setup()
+	    end,
+	},
+
+	-- Mason LSP config
+	{
+		"williamboman/mason-lspconfig.nvim",
+		dependencies = {"mason.nvim"},
+		config = function()
+			require("mason-lspconfig").setup({ensure_installed = {
+                -- C#
+                "omnisharp",
+                -- Bash
+                "bashls",
+                -- CSS
+                "cssls",
+                -- Docker
+                -- Docker files
+                "dockerls", "docker_compose_language_service",
+                -- HTML
+                "html",
+                -- Java
+                "jdtls",
+                -- JS and TS
+                "ts_ls",
+                "eslint",
+                -- JSON
+                "jsonls",
+                -- JSON und YAML
+                "spectral",
+                -- Julia
+                "julials",
+                -- Lua
+                "lua_ls",
+                -- MD
+                "marksman", "markdown_oxide", "grammarly", "vale_ls",
+                -- PHP
+                "intelephense", "phpactor", "psalm",
+                -- Powershell
+                "powershell_es",
+                -- Python
+                "jedi_language_server", "pyright", "sourcery",
+                -- Snyk
+                "snyk_ls",
+                -- SQL
+                "sqlls",
+                -- TOML
+                "taplo",
+                -- XML
+                "lemminx",
+                -- YAML
+                "yamlls",
+                -- GNU Autotools
+                "autotools_ls",
+                -- Generic linter integration
+                "diagnosticls",
+                -- Code Formatter
+                "dprint",
+                -- Spelling
+                "typos_lsp",
+                -- Codeanalysis and -manipulation on AST
+                "ast_grep"
+            }})
+			require("mason-lspconfig").setup_handlers({
+				function (server_name)
+					require("lspconfig")[server_name].setup({})
+				end,
+                ["lua_ls"] = function()
+                    require("lspconfig").lua_ls.setup({
+                        settings = {
+                            Lua = {
+                                runtime = {
+                                    version = "lua_ls",
+                                    path = vim.split(package.path, ";"),
+                                },
+                                diagnostics = {globals = {"vim", "out"}},
+                            },
+                        },
+			        })
+                end,
+                ["typos_lsp"] = function()
+                    require("lspconfig").typos_lsp.setup({
+                        settings = {
+                            typos_lsp = {
+                                enabled = true,
+                                maxNumberOfProblems = 100,  -- Maximale Anzahl der angezeigten Fehler
+                                language = "en,de",  -- Unterstützte Sprachen: Englisch und Deutsch
+                                checkOnSave = true,  -- Rechtschreibprüfung beim Speichern
+                                caseSensitive = false,  -- Groß-/Kleinschreibung ignorieren
+                                autoCorrect = true,  -- Automatische Korrektur aktivieren
+                            }
+                        }
+                    })
+                end,
+            })
+		end,
+    },
+
+    -- Treesitter
+    {
+        "nvim-treesitter/nvim-treesitter",
+        config = function()
+            require("nvim-treesitter.configs").setup({
+                -- Following idk why, lua_ls screamed at me to do it
+                modules = {},
+                sync_install = true,
+                ignore_install = {},
+
+                -- From here on I understand
+                ensure_installed = {"c", "lua", "vim", "vimdoc", "query", "python"},
+                auto_install = true,
+                highlight = {enable = true},
+                indent = {enable = true},
+
+                incremental_selection = {
+                    enable = true,
+                    keymaps = {
+                        init_selection = "<leader>eis",
+                        node_incremental = "<leader>iis",
+                        scope_incremental = "<leader>sis",
+                        node_decremental = "<leader>dis",
+                    },
+                },
+
+                textobjects = {
+                    select = {
+                        enable = true,
+                        lookahead = true,
+                        keymaps = {
+                            ["af"] = "@function.outer",
+                            ["if"] = "@function.inner",
+                            ["ac"] = "@class.outer",
+                            ["ic"] = { query = "@class.inner", desc = "Select inner part of a class region" },
+                            ["as"] = { query = "@local.scope", query_group = "locals", desc = "Select language scope" },
+                        },
+                        selection_modes = {
+                            ['@parameter.outer'] = 'v', -- charwise
+                            ['@function.outer'] = 'V', -- linewise
+                            ['@class.outer'] = '<c-v>', -- blockwise
+                        },
+                        include_surrounding_whitespace = true,
+                    },
+                },
+            })
+        end,
+    },
+
+    {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+    },
+
+	-- Telescope
+	{
+		"nvim-telescope/telescope.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			require("telescope").setup({
+				defaults = {
+					color_devicons = true,
+				},
+			})
+		end,
+	},
+
+	-- Lualine
+	{
+		"nvim-lualine/lualine.nvim",
+		requires = {"kyazdani42/nvim-web-devicons"},
+		config = function()
+			require("lualine").setup({
+                options = {
+					icons_enabled = true,
+                    theme = "onedark",
+                    section_separators = {left = "", right = ""},
+                    component_separators = {left = "", right = ""}
+				},
+				sections = {
+					lualine_a = {   {"mode", separator = {left = "", right = ""}}},
+					lualine_b = {   {"branch", color = {fg = '#61afef', bg = '#333739'}},
+                                    {"diff", color = {fg = '#61afef', bg = '#333739'}}},
+					lualine_c = {   {"filename", color = {fg = '#61afef', bg = '#333739'}},
+                                    {"filesize", color = {fg = '#61afef', bg = '#333739'}},
+                                    {"diagnostics", color = {fg = '#61afef', bg = '#333739'}}},
+					lualine_x = {"searchcount", "selectioncount"},
+                    lualine_y = {"buffers", "tabs", "windows"},
+                    lualine_z = {{
+                        function()
+                            return  vim.fn.line('.') ..
+                                    ':' .. vim.fn.col('.') ..
+                                    ' | ' .. clock()
+                        end,
+                        separator = {left = '', right = ''}
+                    }}
+				},
+                inactive_sections = {
+                    lualine_a = {},
+                    lualine_b = {},
+                    lualine_c = {"filename"},
+                    lualine_x = {},
+                    lualine_y = {},
+                    lualine_z = {}
+                },
+			})
+		end,
+	},
+
+    -- Mini
+    -- {
+    --    "echasnovski/mini.nvim",
+    -- }
+
+    -- Snacks
+    -- {
+    --    "folke/snacks.nvim",
+    -- }
+
+    -- Noice
+    {
+        "folke/noice.nvim",
+        requires = {
+            "nvim-lua/plenary.nvim",
+            "muniftanjim/nui.nvim",
+        },
+        config = function()
+            require("noice").setup({
+                lsp = {
+                    progress = {enabled = true},
+                    hover = {enabled = true},
+                    signature = {enabled = true},
+                },
+                messages = {
+                    enabled = true,
+                    view = "mini",
+                },
+            })
+        end,
+    },
+
+    -- Notify
+    {
+        'rcarriga/nvim-notify',
+        config = function()
+            require("notify").setup({
+                stages = "fade_in_slide_out",
+                timeout = 3000,
+                max_height = 10,
+            })
+        end
+    },
+
+    -- Obisidan
+    -- {
+    --    "epwalsh/obsidian.nvim",        
+    -- },
+})
+
+-- Functions for Options
+
+
+-- Options
+vim.opt.number = true															-- Absolute Zeilennummern
+vim.opt.relativenumber = true													-- Relative Zeilennummern
+
+vim.opt.scrolloff = 999                                                         -- Cursor bleibt inder mitte
+
+vim.opt.showmatch = true														-- Hervorheben von passende Klammern
+vim.opt.cursorline = true														-- Hervorhebung der aktuellen Zeile
+
+vim.opt.virtualedit = "block"                                                   -- Enables VE in VB-Mode
+
+vim.opt.splitbelow = true														-- Neues Fenster Unten
+vim.opt.splitright = true														-- Neues Fenster Rechts
+
+vim.opt.inccommand = "split"                                                    -- Shows :%s/ result in splitwindow
+
+vim.opt.wrap = false															-- Überfluss der Zeile auf nächster Zeile
+
+vim.opt.colorcolumn = "81"														-- Markierung der 81. Spalte
+vim.opt.signcolumn = "yes"														-- Force extra Spalte links
+
+vim.opt.expandtab = true														-- Ersetzt \t durch Leerzeichen
+vim.opt.tabstop = 4																-- Tabulatorgrösse für laden uns speichern
+vim.opt.shiftwidth = 4                                                          -- Tabulatorgrösse für aktionen
+
+vim.o.ignorecase = true                                                         -- Ingoriert Gross/Kleinschreibung bei Commands
+
+vim.opt.termguicolors = true                                                    -- Verändert redndering
+
+vim.wo.foldmethod = 'expr'
+vim.wo.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+
+
+-- Keymaps
+-- Functions for Keymapconfig
+
+-- Modes
+vim.keymap.set("n", "<A-v>", "<C-v>",
+    {noremap = true, silent = true, desc = "Visual Block Mode"})
+
+-- Basic Movement
+vim.keymap.set("n", "l", "h",
+    {noremap = true, silent = true, desc = "Move left normalmode"})
+vim.keymap.set("v", "l", "h",
+    {noremap = true, silent = true, desc = "Move left visualmode"})
+
+vim.keymap.set("n", "ö", "l",
+    {noremap = true, silent = true, desc = "Move right normahmode"})
+vim.keymap.set("v", "ö", "l",
+    {noremap = true, silent = true, desc = "Move right visualmode"})
+
+-- System Clipboard
+vim.keymap.set("n", "<C-s>", ":w<CR>",
+    {noremap = true, silent = true, desc = "Save File normalmode"})
+vim.keymap.set("i", "<C-s>", "<ESC>:w<CR>i",
+    {noremap = true, silent = true, desc = "Save File inputmode"})
+vim.keymap.set("v", "<C-s>", "<ESC>:w<CR>i",
+    {noremap = true, silent = true, desc = "Save File visualmode"})
+
+vim.keymap.set("v", "<C-c>", '"+y',
+    {noremap = true, silent = true, desc = "Copy to OS Clipboard"})
+
+vim.keymap.set("n", "<C-v>", '"+p',
+    {noremap = true, silent = true, desc = "Past from OS Clipboard normalmode"})
+vim.keymap.set("i", "<C-v>", '"+p',
+    {noremap = true, silent = true, desc = "Past from OS Clipboard inputmode"})
+vim.keymap.set("v", "<C-v>", '"+p',
+    {noremap = true, silent = true, desc = "Past from OS Clipboard visualmode"})
+
+vim.keymap.set("v", "<C-x>", '"+d',
+    {noremap = true, silent = true, desc = "Cut to OS Clipboard"})
+
+vim.keymap.set("n", "<C-z>", "u",
+    {noremap = true, silent = true, desc = "Back normalmode"})
+vim.keymap.set("i", "<C-z>", "u",
+    {noremap = true, silent = true, desc = "Back inputmode"})
+vim.keymap.set("v", "<C-z>", "u",
+    {noremap = true, silent = true, desc = "Back visualmode"})
+
+vim.keymap.set("n", "<C-y>", "<C-r>",
+    {noremap = true, silent = true, desc = "Forward normalmode"})
+vim.keymap.set("i", "<C-y>", "<C-r>",
+    {noremap = true, silent = true, desc = "Forward inputmode"})
+vim.keymap.set("v", "<C-y>", "<C-r>",
+    {noremap = true, silent = true, desc = "Forward visualmode"})
+
+-- Special Functions
+vim.keymap.set("n", "<leader>sh", ":split<CR>",
+    {noremap = true, silent = true, desc = "Horizontal split"})
+vim.keymap.set("n", "<leader>sv", ":vsplit<CR>",
+    {noremap = true, silent = true, desc = "Vertical split"})
+
+vim.keymap.set("n", "<leader>1l", "gg",
+    {noremap = true, silent = true, desc = "First Line normalmode"})
+vim.keymap.set("v", "<leader>1l", "gg",
+    {noremap = true, silent = true, desc = "First Line visualmode"})
+
+vim.keymap.set("n", "<leader>1c", "ggg0",
+    {noremap = true, silent = true, desc = "First Line First Char normalmode"})
+vim.keymap.set("v", "<leader>1c", "ggg0",
+    {noremap = true, silent = true, desc = "First Line First Char visualmode"})
+
+vim.keymap.set("n", "<leader>ll", "G",
+    {noremap = true, silent = true, desc = "Last Line normalmode"})
+vim.keymap.set("v", "<leader>ll", "G",
+    {noremap = true, silent = true, desc = "Last Line visualmode"})
+
+vim.keymap.set("n", "<leader>lc", "Gg$",
+    {noremap = true, silent = true, desc = "Last Line Last Char normalmode"})
+vim.keymap.set("v", "<leader>lc", "Gg$",
+    {noremap = true, silent = true, desc = "Last Line Last Char visualmode"})
+
+
+-- LSP
+-- Typos
+vim.keymap.set("n", "<leader>tsc", ToggleTypos,
+    {noremap = true, silent = true, desc = "Toggle Spellchecking"})
+
+
+-- Treesitter
+-- Folding
+vim.keymap.set("n", "<leader>ufa", "zR",
+    {noremap = true, silent = true, desc = "Unfold All"})
+vim.keymap.set("n", "<leader>ffa", "zM",
+    {noremap = true, silent = true, desc = "Fold all"})
+
+
+
+-- Telescope
+local builtin = require('telescope.builtin')
+
+vim.keymap.set("n", "<leader>ff", builtin.find_files,
+    {noremap = true, silent = true, desc = "Telescope find_file"})
+vim.keymap.set("n", "<leader>fb", builtin.buffers,
+    {noremap = true, silent = true, desc = "Telescope buffers"})
+
+vim.keymap.set("n", "<leader>sd", "<cmd>Telescope lsp_definitions<cr>",
+	{ noremap = true, silent = true, desc = "Show definitions"})
+vim.keymap.set("n", "<leader>sr", "<cmd>Telescope lsp_references<cr>",
+	{ noremap = true, silent = true, desc = "Show references"})
+vim.keymap.set("n", "<leader>si", "<cmd>Telescope lsp_implementations<cr>",
+	{ noremap = true, silent = true, desc = "Show implementations"})
+vim.keymap.set("n", "<leader>sd", "<cmd>Telescope diagnostics<cr>",
+	{ noremap = true, silent = true, desc = "Show diagnostics"})
