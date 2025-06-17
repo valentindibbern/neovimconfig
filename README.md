@@ -1,4 +1,15 @@
-# 💤 LazyVim
+# Meine persönliche Neovim Config
 
-A starter template for [LazyVim](https://github.com/LazyVim/LazyVim).
-Refer to the [documentation](https://lazyvim.github.io/installation) to get started.
+Einleitung...
+
+## Integrierte Plugins
+
+- Theme: navarasu/onedark.nvim
+- Web-Devicons: nvim-tree/nvim-web-devicons
+- LSP:
+- - nvim-tree/nvim-web-devicons
+- - mason-org/mason-lspconfig.nvim
+- Treesitter:
+- - nvim-treesitter/nvim-treesitter
+- - nvim-treesitter/nvim-treesitter-textobjects
+- Lualine: nvim-lualine/lualine.nvim
