@@ -1,6 +1,6 @@
 # Meine persönliche Neovim Config
 
-Einleitung...
+Dies ist meine Persönliche Neovim-Config.
 
 ## Integrierte Plugins
 
@@ -19,3 +19,9 @@ Einleitung...
   - [rcarriga/nvim-notify](https://github.com/rcarriga/nvim-notify)
 - **Mini:** [echasnovski/mini.nvim](https://github.com/echasnovski/mini.nvim)
 - **Snacks:** [folke/snacks.nvim](https://github.com/folke/snacks.nvim)
+
+## Plugin Warteliste
+
+- Ürgendwas für Obsidian
+- Ürgendwas für Python mit UV
+- Ürgendwas in richtung KI
