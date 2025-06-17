@@ -19,9 +19,9 @@ return {
 		        sections = {
 		            lualine_a = {"mode"},
 			        lualine_b = {"branch", "diff"},
-                    lualine_c = {"filename"},
-			        lualine_x = {"selectioncount"},
-                    lualine_y = {"buffers"},
+                    lualine_c = {"selectioncount"},
+			        lualine_x = {"diagnostics"},
+                    lualine_y = {"filename"},
                     lualine_z = {clockpos}
 		        }
             })
