@@ -20,7 +20,6 @@ vim.opt.termguicolors = true                                                    
 vim.opt.clipboard = "unnamedplus"
 
 -- Keymaps
-
 -- Modes
 vim.keymap.set("n", "<A-v>", "<C-v>",
     {noremap = true, silent = true, desc = "Visual Block Mode"})
@@ -98,15 +97,3 @@ vim.keymap.set("n", "<leader>lc", "Gg$",
     {noremap = true, silent = true, desc = "Last Line Last Char normalmode"})
 vim.keymap.set("v", "<leader>lc", "Gg$",
     {noremap = true, silent = true, desc = "Last Line Last Char visualmode"})
-
--- Folding
-vim.keymap.set("n", "<leader>uaf", "zR",
-    {noremap = true, silent = true, desc = "Unfold all Folds"})
-vim.keymap.set("n", "<leader>faf", "zM",
-    {noremap = true, silent = true, desc = "Fold all Folds"})
-vim.keymap.set("n", "<leader>fcf", "zc",
-    {noremap = true, silent = true, desc = "Fold current Fold"})
-vim.keymap.set("n", "<leader>ucf", "zo",
-    {noremap = true, silent = true, desc = "Unfold current Fold"})
-vim.keymap.set("n", "<leader>tcf", "za",
-    {noremap = true, silent = true, desc = "Toggle current Fold"})

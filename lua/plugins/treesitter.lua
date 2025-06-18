@@ -18,10 +18,10 @@ return {
                 incremental_selection = {
                     enable = true,
                     keymaps = {
-                        init_selection = "<leader>eis",
-                        node_incremental = "<leader>iis",
-                        scope_incremental = "<leader>sis",
-                        node_decremental = "<leader>dis",
+                        init_selection = "<leader>iis",
+                        node_incremental = "<leader>inis",
+                        scope_incremental = "<leader>isis",
+                        node_decremental = "<leader>dnis",
                     },
                 },
 
@@ -34,10 +34,10 @@ return {
                             ["if"] = "@function.inner",
                             ["ac"] = "@class.outer",
                             ["ic"] = {  query = "@class.inner",
-                                        desc = "Select inner part of a class region" },
+                                desc = "Select inner part of a class region" },
                             ["as"] = {  query = "@local.scope",
-                                        query_group = "locals",
-                                        desc = "Select language scope" },
+                                query_group = "locals",
+                                desc = "Select language scope" },
                         },
                         selection_modes = {
                             ['@parameter.outer'] = 'v', -- charwise
