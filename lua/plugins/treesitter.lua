@@ -2,6 +2,12 @@ return {
     -- Treesitter
     {
         "nvim-treesitter/nvim-treesitter",
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter-textobjects",
+            "nvim-treesitter/nvim-treesitter-refactor",
+            "nvim-treesitter/nvim-treesitter-context",
+            "HiPhish/rainbow-delimiters.nvim",
+        },
         config = function()
             require("nvim-treesitter.configs").setup({
                 -- Following idk why, lua_ls screamed at me to do it
@@ -30,19 +36,22 @@ return {
                         enable = true,
                         lookahead = true,
                         keymaps = {
-                            ["af"] = "@function.outer",
-                            ["if"] = "@function.inner",
-                            ["ac"] = "@class.outer",
-                            ["ic"] = {  query = "@class.inner",
-                                desc = "Select inner part of a class region" },
-                            ["as"] = {  query = "@local.scope",
-                                query_group = "locals",
-                                desc = "Select language scope" },
+                            ["af"] = {query = "@function.outer",
+                                      desc = "Select around function"},
+                            ["if"] = {query = "@function.inner",
+                                      desc = "Select inner function"},
+                            ["ac"] = {query = "@class.outer",
+                                      desc = "Select around class"},
+                            ["ic"] = {query = "@class.inner",
+                                      desc = "Select inner class"},
+                            ["as"] = {query = "@local.scope",
+                                      query_group = "locals",
+                                      desc = "Select language scope"},
                         },
                         selection_modes = {
-                            ['@parameter.outer'] = 'v', -- charwise
-                            ['@function.outer'] = 'V', -- linewise
-                            ['@class.outer'] = '<c-v>', -- blockwise
+                            ['@parameter.outer'] = 'v',
+                            ['@function.outer'] = 'V',
+                            ['@class.outer'] = '<c-v>',
                         },
                         include_surrounding_whitespace = true,
                     },
@@ -50,9 +59,4 @@ return {
             })
         end,
     },
-
-    -- Textobjects
-    {
-        "nvim-treesitter/nvim-treesitter-textobjects"
-    }
 }
