@@ -3,23 +3,24 @@ return {
        "echasnovski/mini.nvim",
         config = function()
             -- AI
-            require("mini.ai").setup({
-                mappings = {
-                    around = "a",
-                    inside = "i",
+            -- require("mini.ai").setup({
+            --    mappings = {
+            --        around = "a",
+            --        inside = "i",
 
-                    around_next = "an",
-                    inside_next = "in",
-                    around_last = "al",
-                    inside_last = "il",
+            --        around_next = "an",
+            --        inside_next = "in",
+            --        around_last = "al",
+            --        inside_last = "il",
 
-                    gotoleft = "g(",
-                    gotoright = "g)"
-                },
-                n_lines = 50,
-                search_method = "cover_or_next",
-                silent = false
-            })
+            --        gotoleft = "g(",
+            --        gotoright = "g)"
+            --    },
+            --    n_lines = 50,
+            --    search_method = "cover_or_next",
+            --    silent = false
+            --    })
+
             -- Align
             -- require("mini.align").setup({
             --    patterns = {
@@ -31,6 +32,7 @@ return {
             --    padding = 1,
             --    smart_align = true,
             -- })
+
             -- Animate
             require("mini.animate").setup({
                 animations = {
@@ -42,47 +44,17 @@ return {
                 duration = 500,
                 exclude = {"cursor"}
             })
-            -- Basics
-            require("mini.basics").setup({
-                auto_save = true,
-                trim_trailing_whitespace = true,
-                smart_indent = true,
-                auto_indent = true
-            })
-            -- Bracketed
-            require("mini.bracketed").setup({
-                highlight = true,
-                pairs = { "()", "{}", "[]", "<>" },
-                auto_close = true,
-                move_cursor = true,
-                balance = true,
-                smart_indent = true
-            })
-            -- Bufremove
-            -- require("mini.bufremove").setup({})
+
             -- Clue
-            require("mini.clue").setup({
-                show_cmd = true,
-                show_keymaps = true,
-                show_pointers = true,
-                display = "floating",
-                duration = 3000,
-            })
             -- Comment
             require("mini.comment").setup({
+                options = {pad_comment_parts = true},
                 mappings = {
-                    toggle = "<leader>tcm",
-                    uncomment = "§"
-                },
-                commentstring = {
-                    lua = "-- %s",
-                    python = "# %s",
-                    html = "<!-- %s -->",
-                    php = "// %s",
-                    javascript = "// %s"
-                },
-                ignore = {"^%s*$"},
-                create_mappings = true,
+                    comment = "ct",
+                    comment_line = "cl",
+                    comment_visual = "cvm",
+                    textobject = "cto"
+                }
             })
             -- Completion
             require("mini.completion").setup({
