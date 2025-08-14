@@ -45,7 +45,6 @@ return {
                 exclude = {"cursor"}
             })
 
-            -- Clue
             -- Comment
             require("mini.comment").setup({
                 options = {pad_comment_parts = true},
@@ -57,25 +56,10 @@ return {
                 }
             })
             -- Completion
-            require("mini.completion").setup({
-                delay = {completion = 100, info = 100, signature = 50},
-                window = {
-                    info = {height = 25, width = 80, border = 'none'},
-                    signature = {height = 25, width = 80, border = 'none'},
-                },
-                lsp_completion = {
-                    source_func = 'completefunc',
-                    auto_setup = true,
-                },
-                mappings = {
-                    force_twostep = '<C-Space>',
-                    force_fallback = '<A-Space>',
-                },
-                set_vim_settings = true
-            })
+            require("mini.completion").setup()
             require("mini.cursorword").setup({delay = 100})
-            require("mini.diff").setup({})
-            require("mini.extra").setup({})
+            require("mini.diff").setup()
+            require("mini.extra").setup()
             require("mini.files").setup()
             require("mini.fuzzy").setup()
             require("mini.hipatterns").setup()
@@ -88,12 +72,17 @@ return {
             -- require("mini.pair").setup()
             -- require("mini.picks").setup()
             require("mini.sessions").setup()
+            local gen_loader = require('mini.snippets').gen_loader
+            require('mini.snippets').setup({snippets = {
+                    gen_loader.from_file('~/.config/nvim/snippets/global.json'),
+                    gen_loader.from_lang(),
+                }})
             require("mini.splitjoin").setup()
             require("mini.starter").setup()
             require("mini.surround").setup()
             require("mini.tabline").setup()
             require("mini.test").setup()
             require("mini.trailspace").setup()
-        end, 
+        end,
     }
 }
