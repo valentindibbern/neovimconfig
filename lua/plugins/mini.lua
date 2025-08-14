@@ -56,7 +56,9 @@ return {
                 }
             })
             -- Completion
-            require("mini.completion").setup()
+            require("mini.completion").setup({mappings = {
+                scroll_down = '<C-j>',
+                scroll_up = '<C-k>'}})
             require("mini.cursorword").setup({delay = 100})
             require("mini.diff").setup()
             require("mini.extra").setup()
@@ -73,10 +75,19 @@ return {
             -- require("mini.picks").setup()
             require("mini.sessions").setup()
             local gen_loader = require('mini.snippets').gen_loader
-            require('mini.snippets').setup({snippets = {
+            require('mini.snippets').setup({
+                snippets = {
                     gen_loader.from_file('~/.config/nvim/snippets/global.json'),
                     gen_loader.from_lang(),
-                }})
+                },
+                mappings = {
+                    expand = '',
+                    jump_next = '',
+                    jump_prev = '',
+                    stop = '',
+                },
+
+            })
             require("mini.splitjoin").setup()
             require("mini.starter").setup()
             require("mini.surround").setup()
